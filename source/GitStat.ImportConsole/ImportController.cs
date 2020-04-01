@@ -23,8 +23,8 @@ namespace GitStat.ImportConsole
 
             bool isHeader = true;
             Developer dev = null;
-            string hashcode;
-            DateTime dateTime;
+            string hashcode = null;
+            DateTime dateTime = DateTime.Now;
             string message = null;
             int fileChanges = 0;
             int inserts = 0;
@@ -36,16 +36,16 @@ namespace GitStat.ImportConsole
 
                 if (parts.Length > 1)
                 {
-                    if (parts.Length >= 5)
+                    if (parts.Length >= 4)
                     {
                         if(!isHeader)
                         {
                             Commit newCommit = new Commit()
                             {
-                                HashCode = parts[0],
+                                HashCode = hashcode,
                                 Developer = dev,
-                                Date = Convert.ToDateTime(parts[2]),
-                                Message = parts[3],
+                                Date = dateTime,
+                                Message = message,
                                 FilesChanges = fileChanges,
                                 Insertions = inserts,
                                 Deletions = deletes
@@ -67,7 +67,7 @@ namespace GitStat.ImportConsole
                         hashcode = parts[0];
                         dateTime = Convert.ToDateTime(parts[2]);
 
-                        for (int i = 5; i < parts.Length; i++)
+                        for (int i = 3; i < parts.Length; i++)
                         {
                             message = $"{message}, {parts[i]}";
                         }
@@ -94,8 +94,20 @@ namespace GitStat.ImportConsole
                             }                        
                     }
                 }
-
             }
+
+            Commit lastCommit = new Commit()
+            {
+                HashCode = hashcode,
+                Developer = dev,
+                Date = dateTime,
+                Message = message,
+                FilesChanges = fileChanges,
+                Insertions = inserts,
+                Deletions = deletes
+            };
+
+            commits.Add(lastCommit);
 
 
             return commits.ToArray();
