@@ -21,5 +21,16 @@ namespace GitStat.Persistence
             _dbContext.Commits.AddRange(commits);
         }
 
+        public Commit GetById(int id) => _dbContext
+            .Commits
+            .Include(c => c.Developer)
+            .SingleOrDefault(c => c.Id == id);
+
+        public Commit[] GetFromLast4Weeks() => _dbContext
+            .Commits
+            .Include(c => c.Developer)
+            .Where(c => c.Date.Year == 2019 && c.Date.Month == 3)
+            .OrderBy(c => c.Date)
+            .ToArray();
     }
 }
